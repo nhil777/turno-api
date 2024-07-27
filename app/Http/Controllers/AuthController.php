@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,8 +11,9 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends BaseController
 {
-    public function __construct()
-    {
+    public function __construct(
+        private readonly UserService $userService
+    ) {
         $this->middleware('auth:api', [
             'except' => ['login', 'register'],
         ]);
@@ -25,7 +27,7 @@ class AuthController extends BaseController
             'password' => 'required|string|min:6',
         ]);
 
-        $user = User::create([
+        $user = $this->userService->create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),

@@ -18,10 +18,13 @@ class Deposit extends Model
         'status',
     ];
 
-    protected $cast = [
-        'amount' => 'integer',
-        'status' => DepositStatusEnum::class,
-    ];
+    protected function casts(): array
+    {
+        return [
+            'amount' => 'integer',
+            'status' => DepositStatusEnum::class,
+        ];
+    }
 
     public function user(): BelongsTo
     {

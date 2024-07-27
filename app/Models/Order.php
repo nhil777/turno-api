@@ -16,9 +16,12 @@ class Order extends Model
         'description',
     ];
 
-    protected $cast = [
-        'amount' => 'integer',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'amount' => 'integer',
+        ];
+    }
 
     public function user(): BelongsTo
     {

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 
 class UserService
@@ -11,25 +12,35 @@ class UserService
     ) {
     }
 
-    public function create(array $data)
+    public function create(array $data): User
     {
         return $this->userRepository->create($data);
     }
 
-    public function update(array $data, int $id)
+    public function update(array $data, int $id): User
     {
         return $this->userRepository->update($data, $id);
     }
 
-    public function find($id)
+    public function find(int $id): User
     {
         return $this->userRepository->find($id);
     }
 
-    public function removeBalance(int $id, int $amount)
+    public function addBalance(int $id, int $amount): User
+    {
+        $user = $this->userRepository->find($id);
+        $user->balance += $amount;
+        $user->save();
+
+        return $user;
+    }
+
+    public function removeBalance(int $id, int $amount): User
     {
         $user = $this->userRepository->find($id);
         $user->balance -= $amount;
+        $user->save();
 
         return $user;
     }

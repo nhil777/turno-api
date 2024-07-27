@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Enums\DepositStatusEnum;
+use App\Events\DepositStatusUpdated;
+use App\Models\Deposit;
 use App\Services\DepositService;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
@@ -65,7 +67,7 @@ class DepositController extends BaseController
         return $this->success($deposits);
     }
 
-    public function approve(int $deposit): JsonResponse
+    public function approve(Deposit $deposit): JsonResponse
     {
         /** @var \App\Models\User $user */
         $user = auth()->user();
@@ -74,12 +76,14 @@ class DepositController extends BaseController
             throw new UnauthorizedException();
         }
 
-        $this->depositService->approve($deposit);
+        $deposit = $this->depositService->approve($deposit->id);
+
+        event(new DepositStatusUpdated($deposit));
 
         return $this->success(null);
     }
 
-    public function reject(int $deposit): JsonResponse
+    public function reject(Deposit $deposit): JsonResponse
     {
         /** @var \App\Models\User $user */
         $user = auth()->user();
@@ -88,7 +92,9 @@ class DepositController extends BaseController
             throw new UnauthorizedException();
         }
 
-        $this->depositService->reject($deposit);
+        $deposit = $this->depositService->reject($deposit->id);
+
+        event(new DepositStatusUpdated($deposit));
 
         return $this->success(null);
     }

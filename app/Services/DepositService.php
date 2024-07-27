@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\DepositStatusEnum;
+use App\Models\Deposit;
 use App\Models\User;
 use App\Repositories\Interfaces\DepositRepositoryInterface;
 
@@ -18,22 +19,22 @@ class DepositService
         return $this->depositRepository->all();
     }
 
-    public function create(array $data)
+    public function create(array $data): Deposit
     {
         return $this->depositRepository->create($data);
     }
 
-    public function approve(int $id)
+    public function approve(int $id): Deposit
     {
         return $this->depositRepository->update(['status' => DepositStatusEnum::APPROVED], $id);
     }
 
-    public function reject(int $id)
+    public function reject(int $id): Deposit
     {
         return $this->depositRepository->update(['status' => DepositStatusEnum::REJECTED], $id);
     }
 
-    public function find(int $id)
+    public function find(int $id): Deposit
     {
         return $this->depositRepository->find($id);
     }

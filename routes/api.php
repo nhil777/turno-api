@@ -14,17 +14,15 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::controller(DepositController::class)->prefix('deposit')->group(function () {
-        Route::get('', 'index')->name('deposit.index');
-        Route::post('', 'store')->name('deposit.store');
-
-        Route::get('/list', 'list')->name('deposit.list');
+        Route::get('/', 'index')->name('deposit.index');
+        Route::post('/', 'store')->name('deposit.store');
 
         Route::patch('approve/{deposit}', 'approve')->name('deposit.approve');
         Route::patch('reject/{deposit}', 'reject')->name('deposit.reject');
     });
 
     Route::controller(OrderController::class)->group(function () {
-        Route::get('order', 'index');
-        Route::post('order', 'store');
+        Route::get('order', 'index')->name('order.index');
+        Route::post('order', 'store')->name('order.store');
     });
 });

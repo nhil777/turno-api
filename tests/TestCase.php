@@ -4,6 +4,7 @@ namespace Tests;
 
 use App\Enums\DepositStatusEnum;
 use App\Models\Deposit;
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Hash;
@@ -35,5 +36,17 @@ abstract class TestCase extends BaseTestCase
         $deposit->save();
 
         return $deposit;
+    }
+
+    public function createOrder(mixed $data = []): Order
+    {
+        $order = new Order([
+            'user_id' => $data['user_id'] ?? $this->createUser()->id,
+            'amount' => $data['amount']?? random_int(0, 10000),
+            'description' => $data['description']?? fake()->sentence(6),
+        ]);
+        $order->save();
+
+        return $order;
     }
 }

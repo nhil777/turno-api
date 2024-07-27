@@ -28,7 +28,7 @@ class DepositController extends BaseController
         /** @var \App\Models\User $user */
         $user = auth()->user();
 
-        $deposits = $this->userService->deposits($user->id);
+        $deposits = $user->isAdmin() ? $this->depositService->all() : $this->userService->deposits($user->id);
 
         return $this->success($deposits);
     }
@@ -51,20 +51,6 @@ class DepositController extends BaseController
         $deposit->save();
 
         return $this->success($deposit, 201);
-    }
-
-    public function list(): JsonResponse
-    {
-        /** @var \App\Models\User $user */
-        $user = auth()->user();
-
-        if (! $user->isAdmin()) {
-            throw new UnauthorizedException();
-        }
-
-        $deposits = $this->depositService->all();
-
-        return $this->success($deposits);
     }
 
     public function approve(Deposit $deposit): JsonResponse

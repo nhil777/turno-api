@@ -8,7 +8,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\TestWith;
 use Tests\TestCase;
 
 class DepositControllerTest extends TestCase
@@ -19,6 +18,9 @@ class DepositControllerTest extends TestCase
     public function it_lists_user_deposits()
     {
         $user = $this->createUser();
+        $user2 = $this->createUser();
+
+        $this->createDeposit(['user_id' => $user2->id]);
 
         $deposit1 = $this->createDeposit(['user_id' => $user->id]);
         $deposit2 = $this->createDeposit(['user_id' => $user->id]);
@@ -81,7 +83,7 @@ class DepositControllerTest extends TestCase
 
         $token = $response->json('token');
 
-        $response = $this->getJson(route('deposit.list'), ['Authorization' => 'Bearer '.$token]);
+        $response = $this->getJson(route('deposit.index'), ['Authorization' => 'Bearer '.$token]);
         $response->assertStatus(200)
             ->assertJson([
                 'data' => ['data' => [

@@ -13,10 +13,13 @@ Route::prefix('v1')->group(function () {
         Route::post('logout', 'logout');
     });
 
-    Route::controller(DepositController::class)->group(function () {
-        Route::get('deposit', 'index');
-        Route::post('deposit', 'store');
-        Route::get('deposit/list', 'list');
+    Route::controller(DepositController::class)->prefix('deposit')->group(function () {
+        Route::get('', 'index');
+        Route::post('', 'store');
+        Route::get('/list', 'list');
+
+        Route::patch('approve/{deposit}', 'approve');
+        Route::patch('reject/{deposit}', 'reject');
     });
 
     Route::controller(OrderController::class)->group(function () {

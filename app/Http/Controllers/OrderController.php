@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Services\OrderService;
+use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -10,7 +12,10 @@ use Illuminate\Support\Facades\Log;
 
 class OrderController extends BaseController
 {
-    public function __construct()
+    public function __construct(
+        private readonly OrderService $orderService,
+        private readonly UserService $userService
+    )
     {
         $this->middleware('auth:api');
     }
@@ -20,7 +25,7 @@ class OrderController extends BaseController
         /** @var \App\Models\User $user */
         $user = auth()->user();
 
-        $orders = $user->orders()->orderBy('id', 'DESC')->simplePaginate(10);
+        $orders = $this->userService->orders($user->id);
 
         return $this->success($orders);
     }
@@ -42,14 +47,14 @@ class OrderController extends BaseController
         try {
             DB::beginTransaction();
 
-            $order = new Order([
+            $order = $this->orderService->create([
                 'amount' => $request->amount,
                 'description' => $request->description,
                 'user_id' => $user->id,
             ]);
             $order->save();
 
-            $user->balance -= $order->amount;
+            $user = $this->userService->removeBalance($user->id, $order->amount);
             $user->save();
 
             DB::commit();

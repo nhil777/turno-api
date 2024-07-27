@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Enums\DepositStatusEnum;
-use App\Models\Deposit;
+use App\Services\DepositService;
+use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\UnauthorizedException;
@@ -12,7 +13,10 @@ class DepositController extends BaseController
 {
     const MAX_IMAGE_FILE_SIZE = 1024 * 5; // 5MB
 
-    public function __construct()
+    public function __construct(
+        private readonly DepositService $depositService,
+        private readonly UserService $userService
+    )
     {
         $this->middleware('auth:api');
     }
@@ -22,7 +26,7 @@ class DepositController extends BaseController
         /** @var \App\Models\User $user */
         $user = auth()->user();
 
-        $deposits = $user->deposits()->orderBy('id', 'DESC')->simplePaginate(10);
+        $deposits = $this->userService->deposits($user->id);
 
         return $this->success($deposits);
     }
@@ -36,7 +40,7 @@ class DepositController extends BaseController
 
         $imagePath = $request->file('image')->store('deposits', 'public');
 
-        $deposit = new Deposit([
+        $deposit = $this->depositService->create([
             'image' => url('storage') . "/$imagePath",
             'amount' => (int) $request->amount,
             'status' => DepositStatusEnum::WAITING_APPROVAL,
@@ -56,8 +60,36 @@ class DepositController extends BaseController
             throw new UnauthorizedException();
         }
 
-        $deposits = Deposit::orderBy('id', 'DESC')->simplePaginate(10);
+        $deposits = $this->depositService->all();
 
         return $this->success($deposits);
+    }
+
+    public function approve(int $deposit): JsonResponse
+    {
+        /** @var \App\Models\User $user */
+        $user = auth()->user();
+
+        if (! $user->isAdmin()) {
+            throw new UnauthorizedException();
+        }
+
+        $this->depositService->approve($deposit);
+
+        return $this->success(null);
+    }
+
+    public function reject(int $deposit): JsonResponse
+    {
+        /** @var \App\Models\User $user */
+        $user = auth()->user();
+
+        if (! $user->isAdmin()) {
+            throw new UnauthorizedException();
+        }
+
+        $this->depositService->reject($deposit);
+
+        return $this->success(null);
     }
 }

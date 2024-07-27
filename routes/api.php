@@ -16,6 +16,7 @@ Route::prefix('v1')->group(function () {
     Route::controller(DepositController::class)->group(function () {
         Route::get('deposit', 'index');
         Route::post('deposit', 'store');
+        Route::get('deposit/list', 'list');
     });
 
     Route::controller(OrderController::class)->group(function () {

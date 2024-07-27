@@ -6,6 +6,7 @@ use App\Enums\DepositStatusEnum;
 use App\Models\Deposit;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\UnauthorizedException;
 
 class DepositController extends BaseController
 {
@@ -44,5 +45,19 @@ class DepositController extends BaseController
         $deposit->save();
 
         return $this->success($deposit, 201);
+    }
+
+    public function list(): JsonResponse
+    {
+        /** @var \App\Models\User $user */
+        $user = auth()->user();
+
+        if (! $user->isAdmin()) {
+            throw new UnauthorizedException();
+        }
+
+        $deposits = Deposit::orderBy('id', 'DESC')->simplePaginate(10);
+
+        return $this->success($deposits);
     }
 }

@@ -59,4 +59,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->balance >= $amount;
     }
+
+    public function isAdmin(): bool
+    {
+        return $this->is_admin;
+    }
 }

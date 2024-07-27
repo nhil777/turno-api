@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     Route::controller(AuthController::class)->group(function () {
-        Route::post('register', 'register');
-        Route::post('login', 'login');
-        Route::post('refresh', 'refresh');
-        Route::post('logout', 'logout');
+        Route::post('register', 'register')->name('auth.register');
+        Route::post('login', 'login')->name('auth.login');
+        Route::post('refresh', 'refresh')->name('auth.refresh');
+        Route::post('logout', 'logout')->name('auth.logout');
     });
 
     Route::controller(DepositController::class)->prefix('deposit')->group(function () {

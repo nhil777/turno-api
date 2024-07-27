@@ -16,6 +16,16 @@ class DepositController extends BaseController
         $this->middleware('auth:api');
     }
 
+    public function index(): JsonResponse
+    {
+        /** @var \App\Models\User $user */
+        $user = auth()->user();
+
+        $deposits = $user->deposits()->orderBy('id', 'DESC')->simplePaginate(10);
+
+        return $this->success($deposits);
+    }
+
     public function store(Request $request): JsonResponse
     {
         $request->validate([

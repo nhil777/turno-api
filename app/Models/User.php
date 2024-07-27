@@ -28,7 +28,7 @@ class User extends Authenticatable implements JWTSubject
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'balance' => 'integer', // TODO: improve - current its in cents, can we convert and inject it runtime?
+            'balance' => 'integer',
         ];
     }
 
@@ -48,5 +48,15 @@ class User extends Authenticatable implements JWTSubject
     public function deposits(): HasMany
     {
         return $this->hasMany(Deposit::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function hasEnoughFunds(int $amount): bool
+    {
+        return $this->balance >= $amount;
     }
 }

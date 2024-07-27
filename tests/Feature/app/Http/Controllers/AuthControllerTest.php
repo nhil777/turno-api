@@ -45,7 +45,7 @@ class AuthControllerTest extends TestCase
     {
         $password = 'phpunit';
 
-        $user = $this->createUser(password: $password);
+        $user = $this->createUser(['password' => $password]);
 
         $response = $this->postJson(route('auth.login'), [
             'email' => $user->email,

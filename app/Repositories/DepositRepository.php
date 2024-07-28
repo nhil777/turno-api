@@ -9,7 +9,7 @@ class DepositRepository implements DepositRepositoryInterface
 {
     public function all()
     {
-        return Deposit::orderBy('id', 'DESC')->simplePaginate(10);
+        return Deposit::orderBy('id', 'DESC')->with('user')->simplePaginate(10);
     }
 
     public function create(array $data): Deposit

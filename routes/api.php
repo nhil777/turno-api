@@ -15,6 +15,7 @@ Route::prefix('v1')->group(function () {
 
     Route::controller(DepositController::class)->prefix('deposit')->group(function () {
         Route::get('/', 'index')->name('deposit.index');
+        Route::get('/{deposit}', 'view')->name('deposit.view');
         Route::post('/', 'store')->name('deposit.store');
 
         Route::patch('approve/{deposit}', 'approve')->name('deposit.approve');

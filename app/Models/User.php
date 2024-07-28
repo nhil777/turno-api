@@ -21,6 +21,8 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
         'remember_token',
+        'balance',
+        'is_admin',
     ];
 
     protected function casts(): array

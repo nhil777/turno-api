@@ -23,6 +23,18 @@ class DepositController extends BaseController
         $this->middleware('auth:api');
     }
 
+    public function view(Deposit $deposit): JsonResponse
+    {
+        /** @var \App\Models\User $user */
+        $user = auth()->user();
+
+        if (! $user->isAdmin()) {
+            throw new UnauthorizedException();
+        }
+
+        return $this->success($deposit);
+    }
+
     public function index(): JsonResponse
     {
         /** @var \App\Models\User $user */

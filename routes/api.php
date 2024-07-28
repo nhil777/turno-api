@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DepositController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -22,8 +23,12 @@ Route::prefix('v1')->group(function () {
         Route::patch('reject/{deposit}', 'reject')->name('deposit.reject');
     });
 
-    Route::controller(OrderController::class)->group(function () {
-        Route::get('order', 'index')->name('order.index');
-        Route::post('order', 'store')->name('order.store');
+    Route::controller(OrderController::class)->prefix('order')->group(function () {
+        Route::get('/', 'index')->name('order.index');
+        Route::post('/', 'store')->name('order.store');
+    });
+
+    Route::controller(ProfileController::class)->prefix('profile')->group(function () {
+        Route::get('/', 'index')->name('profile.index');
     });
 });

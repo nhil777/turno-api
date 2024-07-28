@@ -66,4 +66,39 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->is_admin;
     }
+
+    public function totalIncome(): int
+    {
+        return $this->deposits()->sum('amount');
+    }
+
+    public function totalExpense(): int
+    {
+        return $this->orders()->sum('amount');
+    }
+
+    public function lastTransactions(int $max = 10)
+    {
+        $transactions = $this->deposits()
+            ->select('id', 'amount', 'created_at as transaction_date')
+            ->get()
+            ->map(function ($transaction) {
+                $transaction['type'] = 'income';
+                return $transaction;
+            })
+            ->merge(
+                $this->orders()->select('id', 'amount', 'created_at as transaction_date')
+                    ->get()
+                    ->map(function ($transaction) {
+                        $transaction['type'] = 'expense';
+                        return $transaction;
+                    })
+            )
+            ->sortByDesc('transaction_date')
+            ->take($max)
+            ->values()
+        ;
+
+        return $transactions;
+    }
 }

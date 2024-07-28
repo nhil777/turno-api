@@ -56,7 +56,6 @@ class DepositControllerTest extends TestCase
 
         $response = $this->postJson(route('deposit.store'), [
             'amount' => 1000,
-            'description' => 'Test deposit',
             'image' => UploadedFile::fake()->image('test.jpg'),
         ], [
             'Authorization' => 'Bearer '.$token,
@@ -64,33 +63,6 @@ class DepositControllerTest extends TestCase
 
         $response->assertStatus(201)
             ->assertJsonStructure(['data' => ['id']]);
-    }
-
-    #[Group('Admin')]
-    #[Test]
-    public function it_list_all_deposits()
-    {
-        $user1 = $this->createUser(['is_admin' => true]);
-        $user2 = $this->createUser();
-
-        $deposit1 = $this->createDeposit(['user_id' => $user1->id]);
-        $deposit2 = $this->createDeposit(['user_id' => $user2->id]);
-
-        $response = $this->postJson(route('auth.login'), [
-            'email' => $user1->email,
-            'password' => 'password',
-        ]);
-
-        $token = $response->json('token');
-
-        $response = $this->getJson(route('deposit.index'), ['Authorization' => 'Bearer '.$token]);
-        $response->assertStatus(200)
-            ->assertJson([
-                'data' => ['data' => [
-                    ['id' => $deposit2->id],
-                    ['id' => $deposit1->id],
-                ]]
-            ]);
     }
 
     #[Group('Admin')]

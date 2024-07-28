@@ -9,6 +9,7 @@ use App\Services\DepositService;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\UnauthorizedException;
 
 class DepositController extends BaseController
@@ -25,10 +26,7 @@ class DepositController extends BaseController
 
     public function view(Deposit $deposit): JsonResponse
     {
-        /** @var \App\Models\User $user */
-        $user = auth()->user();
-
-        if (! $user->isAdmin()) {
+        if (! Gate::allows('view', $deposit)) {
             throw new UnauthorizedException();
         }
 
@@ -40,7 +38,11 @@ class DepositController extends BaseController
         /** @var \App\Models\User $user */
         $user = auth()->user();
 
-        $deposits = $user->isAdmin() ? $this->depositService->all() : $this->userService->deposits($user->id);
+        if ($user->isAdmin()) {
+            $deposits = $this->depositService->all();
+        } else {
+            $deposits = $this->userService->deposits($user->id);
+        }
 
         return $this->success($deposits);
     }
@@ -52,13 +54,15 @@ class DepositController extends BaseController
             'image' => 'required|mimes:jpeg,png,jpg|max:'.self::MAX_IMAGE_FILE_SIZE
         ]);
 
+        $user = auth()->user();
+
         $imagePath = $request->file('image')->store('deposits', 'public');
 
         $deposit = $this->depositService->create([
             'image' => url('storage') . "/$imagePath",
             'amount' => (int) $request->amount,
             'status' => DepositStatusEnum::WAITING_APPROVAL,
-            'user_id' => auth()->id(),
+            'user_id' => $user->id,
         ]);
         $deposit->save();
 
@@ -67,10 +71,7 @@ class DepositController extends BaseController
 
     public function approve(Deposit $deposit): JsonResponse
     {
-        /** @var \App\Models\User $user */
-        $user = auth()->user();
-
-        if (! $user->isAdmin()) {
+        if (! Gate::allows('approve', Deposit::class)) {
             throw new UnauthorizedException();
         }
 
@@ -83,10 +84,7 @@ class DepositController extends BaseController
 
     public function reject(Deposit $deposit): JsonResponse
     {
-        /** @var \App\Models\User $user */
-        $user = auth()->user();
-
-        if (! $user->isAdmin()) {
+        if (! Gate::allows('approve', Deposit::class)) {
             throw new UnauthorizedException();
         }
 

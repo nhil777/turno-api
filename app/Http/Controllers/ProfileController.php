@@ -18,9 +18,9 @@ class ProfileController extends BaseController
 
         return $this->success([
             'balance' => $user->balance,
-            'total_income' => $user->totalIncome(),
-            'total_expense' => $user->totalExpense(),
-            'last_transactions' => $user->lastTransactions(10),
+            'totalIncome' => $user->totalIncome(),
+            'totalExpense' => $user->totalExpense(),
+            'lastTransactions' => $user->lastTransactions(10),
         ]);
     }
 }

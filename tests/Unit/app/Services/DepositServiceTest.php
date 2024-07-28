@@ -8,6 +8,7 @@ use App\Enums\DepositStatusEnum;
 use App\Services\DepositService;
 use App\Repositories\Interfaces\DepositRepositoryInterface;
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 
 class DepositServiceTest extends TestCase
 {
@@ -29,7 +30,8 @@ class DepositServiceTest extends TestCase
         parent::tearDown();
     }
 
-    public function testAll()
+    #[Test]
+    public function all()
     {
         $deposits = Deposit::factory()->count(3)->make();
 
@@ -43,7 +45,8 @@ class DepositServiceTest extends TestCase
         $this->assertEquals($deposits, $result);
     }
 
-    public function testCreate()
+    #[Test]
+    public function create()
     {
         $depositData = Deposit::factory()->make()->toArray();
         $createdDeposit = new Deposit($depositData);
@@ -60,7 +63,8 @@ class DepositServiceTest extends TestCase
         $this->assertEquals($createdDeposit, $result);
     }
 
-    public function testApprove()
+    #[Test]
+    public function approve()
     {
         $depositId = 1;
         $updatedDeposit = new Deposit(['status' => DepositStatusEnum::APPROVED]);
@@ -77,7 +81,8 @@ class DepositServiceTest extends TestCase
         $this->assertEquals($updatedDeposit, $result);
     }
 
-    public function testReject()
+    #[Test]
+    public function reject()
     {
         $depositId = 1;
         $updatedDeposit = new Deposit(['status' => DepositStatusEnum::REJECTED]);
@@ -94,7 +99,8 @@ class DepositServiceTest extends TestCase
         $this->assertEquals($updatedDeposit, $result);
     }
 
-    public function testFind()
+    #[Test]
+    public function find()
     {
         $depositId = 1;
         $foundDeposit = new Deposit(['id' => $depositId]);

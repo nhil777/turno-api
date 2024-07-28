@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Services\OrderService;
 use App\Repositories\Interfaces\OrderRepositoryInterface;
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 
 class OrderServiceTest extends TestCase
 {
@@ -28,7 +29,8 @@ class OrderServiceTest extends TestCase
         parent::tearDown();
     }
 
-    public function testAll()
+    #[Test]
+    public function all()
     {
         $orders = Order::factory()->count(3)->make();
 
@@ -42,7 +44,8 @@ class OrderServiceTest extends TestCase
         $this->assertEquals($orders, $result);
     }
 
-    public function testCreate()
+    #[Test]
+    public function create()
     {
         $orderData = Order::factory()->make()->toArray();
         $createdOrder = new Order($orderData);
@@ -59,7 +62,8 @@ class OrderServiceTest extends TestCase
         $this->assertEquals($createdOrder, $result);
     }
 
-    public function testFind()
+    #[Test]
+    public function find()
     {
         $orderId = 1;
         $foundOrder = new Order(['id' => $orderId]);

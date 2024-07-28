@@ -25,6 +25,7 @@ class DepositServiceTest extends TestCase
     public function tearDown(): void
     {
         Mockery::close();
+
         parent::tearDown();
     }
 

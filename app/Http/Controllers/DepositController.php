@@ -30,6 +30,8 @@ class DepositController extends BaseController
             throw new UnauthorizedException();
         }
 
+        $deposit->load('user');
+
         return $this->success($deposit);
     }
 

@@ -2,7 +2,7 @@
     "version": 2,
     "framework": null,
     "functions": {
-        "api/index.php": { "runtime": "vercel-php@0.3.1" }
+        "api/index.php": { "runtime": "vercel-php@0.6.1" }
     },
     "routes": [{
         "src": "/(.*)",
@@ -10,8 +10,9 @@
     }],
     "env": {
         "APP_ENV": "production",
-        "APP_DEBUG": "true",
+        "APP_DEBUG": "false",
         "APP_URL": "https://turno-api.vercel.app",
+        "APP_KEY": "base64:BWxs5N01nF2XOxddkxzXhFCfJF0BGFjca+Yv9sYvTiI=",
 
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
@@ -22,6 +23,9 @@
 
         "CACHE_DRIVER": "array",
         "LOG_CHANNEL": "stderr",
-        "SESSION_DRIVER": "cookie"
+        "SESSION_DRIVER": "cookie",
+
+        "JWT_SECRET": "Rq6xsqyub61lPO7vyiMBf1nTqUK6e327FENslpVx0OO6WA9dM3wsFQWIcAw2YRGF",
+        "JWT_ALGO": "HS256"
     }
 }
